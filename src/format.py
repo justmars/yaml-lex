@@ -39,18 +39,23 @@ console: Console = Console()
 CHAR_LIMIT_DEFAULT: int = 88
 CONTENT_INDENT: int = 2
 
+
 class LiteralStr(str):
     """Marker class to force PyYAML to emit block scalar style (|-)."""
+
     pass
+
 
 def literal_str_representer(dumper: yaml.Dumper, data: LiteralStr) -> yaml.ScalarNode:
     """PyYAML representer for LiteralStr to use block scalar."""
     return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
 
+
 yaml.add_representer(LiteralStr, literal_str_representer)
 
-MD_TABLE_RE: re.Pattern = re.compile(r'^\s*\|.*\|.*$')
-MD_TABLE_HEADER_RE: re.Pattern = re.compile(r'^\s*\|.*[-:]+.*\|.*$')
+MD_TABLE_RE: re.Pattern = re.compile(r"^\s*\|.*\|.*$")
+MD_TABLE_HEADER_RE: re.Pattern = re.compile(r"^\s*\|.*[-:]+.*\|.*$")
+
 
 def contains_markdown_table(value: Any) -> bool:
     """Check if the string contains Markdown table syntax.
@@ -74,6 +79,7 @@ def contains_markdown_table(value: Any) -> bool:
             return True
     return False
 
+
 def wrap_block(text: str, char_limit: int) -> str:
     """Wrap text at char_limit preserving paragraph breaks.
 
@@ -94,13 +100,11 @@ def wrap_block(text: str, char_limit: int) -> str:
             lines.append("")
         else:
             wrapped = textwrap.fill(
-                para,
-                width=char_limit,
-                break_long_words=False,
-                break_on_hyphens=False
+                para, width=char_limit, break_long_words=False, break_on_hyphens=False
             )
             lines.append(wrapped)
     return "\n".join(lines)
+
 
 def wrap_value(key: Optional[str], value: Any, char_limit: int) -> Any:
     """Wrap string values according to key-specific rules.
@@ -126,7 +130,7 @@ def wrap_value(key: Optional[str], value: Any, char_limit: int) -> Any:
     """
     if not isinstance(value, str):
         return value
-    
+
     has_md_table = contains_markdown_table(value)
 
     # content → always block unless Markdown table
@@ -145,7 +149,10 @@ def wrap_value(key: Optional[str], value: Any, char_limit: int) -> Any:
 
     return value
 
-def process_node(node: Any, parent_key: Optional[str] = None, char_limit: int = CHAR_LIMIT_DEFAULT) -> Any:
+
+def process_node(
+    node: Any, parent_key: Optional[str] = None, char_limit: int = CHAR_LIMIT_DEFAULT
+) -> Any:
     """Recursively process a YAML node applying wrap rules.
 
     Args:
@@ -165,13 +172,24 @@ def process_node(node: Any, parent_key: Optional[str] = None, char_limit: int = 
         'Simple'
     """
     if isinstance(node, dict):
-        return {k: process_node(wrap_value(k, v, char_limit), k, char_limit) for k, v in node.items()}
+        return {
+            k: process_node(wrap_value(k, v, char_limit), k, char_limit)
+            for k, v in node.items()
+        }
     elif isinstance(node, list):
-        return [process_node(i, parent_key=parent_key, char_limit=char_limit) for i in node]
+        return [
+            process_node(i, parent_key=parent_key, char_limit=char_limit) for i in node
+        ]
     else:
         return wrap_value(parent_key, node, char_limit)
 
-def format_yaml_file(file_path: Path, inplace: bool = False, output_file: Optional[Path] = None, char_limit: int = CHAR_LIMIT_DEFAULT) -> None:
+
+def format_yaml_file(
+    file_path: Path,
+    inplace: bool = False,
+    output_file: Optional[Path] = None,
+    char_limit: int = CHAR_LIMIT_DEFAULT,
+) -> None:
     """Format a YAML file with wrapping rules.
 
     Args:
@@ -209,7 +227,7 @@ def format_yaml_file(file_path: Path, inplace: bool = False, output_file: Option
         allow_unicode=True,
         width=char_limit,
         indent=CONTENT_INDENT,
-        default_flow_style=False
+        default_flow_style=False,
     )
 
     if target_file is None:
@@ -221,6 +239,7 @@ def format_yaml_file(file_path: Path, inplace: bool = False, output_file: Option
         except Exception as e:
             console.print(f"[red]Failed to write {target_file}: {e}[/red]")
 
+
 def find_yaml_files(folder: Path) -> Generator[Path, None, None]:
     """Recursively find all .yml files in a folder.
 
@@ -230,20 +249,33 @@ def find_yaml_files(folder: Path) -> Generator[Path, None, None]:
     Returns:
         Generator[Path, None, None]: All YAML files under the folder.
     """
-    return folder.rglob("*.yml") # type: ignore
+    return folder.rglob("*.yml")  # type: ignore
+
 
 @click.command()
 @click.argument("path", type=click.Path(exists=True))
 @click.option("--inplace", is_flag=True, default=False, help="Format files in place.")
-@click.option("--output", type=click.Path(), default=None, help="Output file (only for single file input).")
-@click.option("--char-limit", type=int, default=CHAR_LIMIT_DEFAULT, help="Maximum line length for wrapping.")
+@click.option(
+    "--output",
+    type=click.Path(),
+    default=None,
+    help="Output file (only for single file input).",
+)
+@click.option(
+    "--char-limit",
+    type=int,
+    default=CHAR_LIMIT_DEFAULT,
+    help="Maximum line length for wrapping.",
+)
 def cli(path: str, inplace: bool, output: Optional[str], char_limit: int) -> None:
     """CLI entry point for YAML formatting."""
     path_obj: Path = Path(path)
     if path_obj.is_file():
         out_path: Optional[Path] = Path(output) if output else None
         console.print(f"[cyan]Processing file:[/cyan] {path_obj}")
-        format_yaml_file(path_obj, inplace=inplace, output_file=out_path, char_limit=char_limit)
+        format_yaml_file(
+            path_obj, inplace=inplace, output_file=out_path, char_limit=char_limit
+        )
     elif path_obj.is_dir():
         if output:
             raise click.BadParameter("Cannot specify --output when input is a folder")
@@ -252,6 +284,7 @@ def cli(path: str, inplace: bool, output: Optional[str], char_limit: int) -> Non
             format_yaml_file(file, inplace=True, char_limit=char_limit)
     else:
         raise click.BadParameter(f"Path is neither file nor folder: {path}")
+
 
 if __name__ == "__main__":
     cli()  # type: ignore
