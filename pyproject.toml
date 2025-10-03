@@ -25,3 +25,11 @@ dev = [
 [tool.pytest.ini_options]
 minversion = "8.4"
 addopts = "-ra -q -vv --cov --doctest-modules"
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+ignore = ["F401", "F403", "E501"]
+fixable = ["F", "E", "W", "I001"]
+select = ["F", "E", "W", "I001"]

@@ -1,9 +1,10 @@
+import re
 import textwrap
 from pathlib import Path
-import re
-from typing import Any, Optional, Generator
-import yaml  # type: ignore
+from typing import Any, Generator, Optional
+
 import click  # type: ignore
+import yaml  # type: ignore
 from rich.console import Console  # type: ignore
 
 console: Console = Console()
