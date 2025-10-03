@@ -1,18 +1,19 @@
 [project]
 name = "yaml-lex"
-version = "0.1.0"
+version = "0.2.0"
 description = "A corpus-statutes YAML formatter with smart wrapping rules"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "click>=8.2.1",
+    "PyYAML >= 6.0.3",
+    "rich >= 14.1",
 ]
 
 [project.optional-dependencies]
 dev = [
     "jupyter >= 1.1.1",
     "notebook >= 7.4.3",
-    "rich >= 14.1",
     # docs
     "mkdocs >= 1.6.1",
     "mkdocs-material >= 9.6.20",
