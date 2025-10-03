@@ -159,7 +159,7 @@ def process_node(
 
 def format_yaml_file(
     file_path: Path,
-    inplace: bool = False,
+    inplace: bool = True,
     output_file: Optional[Path] = None,
     char_limit: int = CHAR_LIMIT_DEFAULT,
 ) -> None:
