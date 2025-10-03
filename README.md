@@ -6,11 +6,19 @@ It is designed to make YAML files more readable and maintainable, particularly f
 
 ## Features
 
-- Reformat content nodes using block scalar (|-), unless they contain Markdown tables.
-- Wrap caption and title nodes if their effective length exceeds a configurable character limit.
-- Wrap long single-line strings for other keys.
-- Recursive formatting of folders containing YAML files.
-- In-place formatting or output to a separate file.
+✅ Wraps long strings at a configurable line width
+✅ Preserves blank lines and paragraph breaks
+✅ Converts long text into block scalars (|-) for YAML readability
+✅ Special rules for common keys:
+    - `content` → always block scalar unless it contains a Markdown table
+    - `caption` / `title` → flattened into single line, then wrapped if too long
+    - Other long strings → wrapped into block scalars
+✅ Detects and preserves Markdown tables (avoids breaking table formatting)
+✅ Works on a single file or recursively on a folder of YAML files
+✅ In-place editing or output to a new file
+
+## Notes
+
 - Rich logging using rich.
 - Fully compatible with doctest-style examples for testing.
 - Supports CI/CD workflows with testing, linting, pre-commit hooks, and docs building.

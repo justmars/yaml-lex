@@ -241,7 +241,7 @@ def find_yaml_files(folder: Path) -> Generator[Path, None, None]:
     help="Maximum line length for wrapping.",
 )
 def cli(path: str, inplace: bool, output: Optional[str], char_limit: int) -> None:
-    """CLI entry point for YAML formatting."""
+    """Format a YAML file or all `.yml` files in a folder."""
     path_obj: Path = Path(path)
     if path_obj.is_file():
         out_path: Optional[Path] = Path(output) if output else None

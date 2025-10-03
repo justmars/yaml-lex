@@ -22,6 +22,9 @@ dev = [
     "pytest-cov >= 5.0",
 ]
 
+[project.scripts]
+yaml-lex = "yaml_lex:cli"
+
 [tool.pytest.ini_options]
 minversion = "8.4"
 addopts = "-ra -q -vv --cov --doctest-modules"
@@ -33,3 +36,6 @@ line-length = 88
 ignore = ["F401", "F403", "E501"]
 fixable = ["F", "E", "W", "I001"]
 select = ["F", "E", "W", "I001"]
+
+[tool.uv]
+package = true
