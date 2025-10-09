@@ -1863,12 +1863,13 @@ wheels = [
 
 [[package]]
 name = "yaml-lex"
-version = "0.2.0"
+version = "0.2.2"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
     { name = "pyyaml" },
     { name = "rich" },
+    { name = "watchdog" },
 ]
 
 [package.optional-dependencies]
@@ -1894,5 +1895,6 @@ requires-dist = [
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=5.0" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "rich", specifier = ">=14.1" },
+    { name = "watchdog", specifier = ">=6.0.0" },
 ]
 provides-extras = ["dev"]

@@ -1,6 +1,6 @@
 import pytest
 
-from yaml_lex import contains_markdown_table, wrap_block, wrap_value
+from yaml_lex.format import contains_markdown_table, wrap_block, wrap_value
 
 
 @pytest.mark.parametrize(
